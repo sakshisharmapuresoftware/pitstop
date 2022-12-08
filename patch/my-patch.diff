@@ -1,0 +1,361 @@
+diff --git a/src/RebuildAllDockerImages.sh b/src/RebuildAllDockerImages.sh
+index 38df238..5067839 100755
+--- a/src/RebuildAllDockerImages.sh
++++ b/src/RebuildAllDockerImages.sh
+@@ -25,4 +25,4 @@ docker build -t pitstop-dotnet-aspnet-base:1.0 . -f dotnet-aspnet-base-dockerfil
+ 
+ # Rebuild all the services that have changes
+ # If you want to (re)build only a specific service, go to the src folder and execute `docker-compose build <servicename-lowercase>`
+-docker-compose build $NOCACHE
++docker compose build $NOCACHE
+diff --git a/src/docker-compose.yml b/src/docker-compose.yml
+index a2fe25a..971bbd4 100644
+--- a/src/docker-compose.yml
++++ b/src/docker-compose.yml
+@@ -26,11 +26,11 @@ services:
+       - SA_PASSWORD=8jkGh47hnDw89Haq8LN2
+ 
+   mailserver:
+-    image: maildev/maildev:1.1.0
++    image: maildev/maildev:1.1.1
+     container_name: mailserver
+     ports:
+-      - "25:25"
+-      - "4000:80"
++      - "25:1025"
++      - "4000:1080"
+ 
+   logserver:
+     image: datalust/seq:latest
+@@ -41,7 +41,7 @@ services:
+       - ACCEPT_EULA=Y
+ 
+   vehiclemanagementapi:
+-    image: pitstop/vehiclemanagementapi:1.0
++    image: pitstop/vehiclemanagementapi:latest
+     build: VehicleManagementAPI
+     depends_on:
+       - rabbitmq
+@@ -52,7 +52,7 @@ services:
+       - ASPNETCORE_ENVIRONMENT=Production
+ 
+   customermanagementapi:
+-    image: pitstop/customermanagementapi:1.0
++    image: pitstop/customermanagementapi:latest
+     build: CustomerManagementAPI
+     depends_on:
+       - rabbitmq
+@@ -63,7 +63,7 @@ services:
+       - ASPNETCORE_ENVIRONMENT=Production
+ 
+   workshopmanagementapi:
+-    image: pitstop/workshopmanagementapi:1.0
++    image: pitstop/workshopmanagementapi:latest
+     build: WorkshopManagementAPI
+     depends_on:
+       - rabbitmq
+@@ -74,7 +74,7 @@ services:
+       - ASPNETCORE_ENVIRONMENT=Production
+ 
+   auditlogservice:
+-    image: pitstop/auditlogservice:1.0
++    image: pitstop/auditlogservice:latest
+     build: AuditlogService
+     container_name: auditlogservice
+     depends_on:
+@@ -83,7 +83,7 @@ services:
+       - DOTNET_ENVIRONMENT=Production
+ 
+   invoiceservice:
+-    image: pitstop/invoiceservice:1.0
++    image: pitstop/invoiceservice:latest
+     build: InvoiceService
+     container_name: invoiceservice
+     depends_on:
+@@ -94,7 +94,7 @@ services:
+       - DOTNET_ENVIRONMENT=Production
+ 
+   notificationservice:
+-    image: pitstop/notificationservice:1.0
++    image: pitstop/notificationservice:latest
+     build: NotificationService
+     container_name: notificationservice
+     depends_on:
+@@ -105,7 +105,7 @@ services:
+       - DOTNET_ENVIRONMENT=Production
+ 
+   timeservice:
+-    image: pitstop/timeservice:1.0
++    image: pitstop/timeservice:latest
+     build: TimeService
+     container_name: timeservice
+     depends_on:
+@@ -114,7 +114,7 @@ services:
+       - DOTNET_ENVIRONMENT=Production
+ 
+   workshopmanagementeventhandler:
+-    image: pitstop/workshopmanagementeventhandler:1.0
++    image: pitstop/workshopmanagementeventhandler:latest
+     build: WorkshopManagementEventHandler
+     container_name: workshopmanagementeventhandler
+     depends_on:
+@@ -124,7 +124,7 @@ services:
+       - DOTNET_ENVIRONMENT=Production
+ 
+   webapp:
+-    image: pitstop/webapp:1.0
++    image: pitstop/webapp:latest
+     build: WebApp
+     container_name: webapp
+     depends_on:
+diff --git a/src/k8s/auditlogservice.yaml b/src/k8s/auditlogservice.yaml
+index 73cceeb..25e3c47 100644
+--- a/src/k8s/auditlogservice.yaml
++++ b/src/k8s/auditlogservice.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: DOTNET_ENVIRONMENT
+           value: Production
+-        image: pitstop/auditlogservice:1.0
++        image: avinashyadavpuresoftware/auditlogservice:1.0
+         imagePullPolicy: IfNotPresent
+         name: auditlogservice
+       restartPolicy: Always
+diff --git a/src/k8s/customermanagementapi-v1-istio.yaml b/src/k8s/customermanagementapi-v1-istio.yaml
+index 80d09be..9bf07d3 100644
+--- a/src/k8s/customermanagementapi-v1-istio.yaml
++++ b/src/k8s/customermanagementapi-v1-istio.yaml
+@@ -24,10 +24,10 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/customermanagementapi:1.0
++        image: pitstop/customermanagementapi:latest
+         imagePullPolicy: IfNotPresent
+         name: customermanagementapi
+         ports:
+         - containerPort: 5100
+       restartPolicy: Always
+-  
+\ No newline at end of file
++  
+diff --git a/src/k8s/customermanagementapi-v1.yaml b/src/k8s/customermanagementapi-v1.yaml
+index 183271f..388ce63 100644
+--- a/src/k8s/customermanagementapi-v1.yaml
++++ b/src/k8s/customermanagementapi-v1.yaml
+@@ -22,10 +22,10 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/customermanagementapi:1.0
++        image: avinashyadavpuresoftware/customermanagementapi:1.0
+         imagePullPolicy: IfNotPresent
+         name: customermanagementapi
+         ports:
+         - containerPort: 5100
+       restartPolicy: Always
+-  
+\ No newline at end of file
++  
+diff --git a/src/k8s/customermanagementapi-v2-istio.yaml b/src/k8s/customermanagementapi-v2-istio.yaml
+index c8715bb..54ebf36 100644
+--- a/src/k8s/customermanagementapi-v2-istio.yaml
++++ b/src/k8s/customermanagementapi-v2-istio.yaml
+@@ -24,7 +24,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/customermanagementapi:2.0
++        image: pitstop/customermanagementapi:latest
+         imagePullPolicy: IfNotPresent
+         name: customermanagementapi
+         ports:
+diff --git a/src/k8s/customermanagementapi-v2.yaml b/src/k8s/customermanagementapi-v2.yaml
+index 4b1a3a0..5083c4c 100644
+--- a/src/k8s/customermanagementapi-v2.yaml
++++ b/src/k8s/customermanagementapi-v2.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/customermanagementapi:2.0
++        image: pitstop/customermanagementapi:latest
+         imagePullPolicy: IfNotPresent
+         name: customermanagementapi
+         ports:
+diff --git a/src/k8s/dashboard-adminuser.yaml b/src/k8s/dashboard-adminuser.yaml
+index cdd5646..f286676 100644
+--- a/src/k8s/dashboard-adminuser.yaml
++++ b/src/k8s/dashboard-adminuser.yaml
+@@ -15,4 +15,4 @@ roleRef:
+ subjects:
+ - kind: ServiceAccount
+   name: admin-user
+-  namespace: kube-system
+\ No newline at end of file
++  namespace: kube-system
+diff --git a/src/k8s/disable-default-istio-injection.sh b/src/k8s/disable-default-istio-injection.sh
+old mode 100644
+new mode 100755
+diff --git a/src/k8s/invoiceservice.yaml b/src/k8s/invoiceservice.yaml
+index dd5d67f..09729df 100644
+--- a/src/k8s/invoiceservice.yaml
++++ b/src/k8s/invoiceservice.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: DOTNET_ENVIRONMENT
+           value: Production
+-        image: pitstop/invoiceservice:1.0
++        image: avinashyadavpuresoftware/invoiceservice:1.0
+         imagePullPolicy: IfNotPresent
+         name: invoiceservice
+       restartPolicy: Always
+diff --git a/src/k8s/mailserver.yaml b/src/k8s/mailserver.yaml
+index 047aae3..1d72302 100644
+--- a/src/k8s/mailserver.yaml
++++ b/src/k8s/mailserver.yaml
+@@ -19,7 +19,7 @@ spec:
+         version: v1
+     spec:
+       containers:
+-      - image: maildev/maildev:1.1.0
++      - image: maildev/maildev:1.1.1
+         imagePullPolicy: IfNotPresent
+         name: mailserver
+         ports:
+@@ -42,10 +42,10 @@ spec:
+   ports:
+   - name: "smtp"
+     port: 25
+-    targetPort: 25
++    targetPort: 1025
+   - name: "web"
+     port: 4000
+-    targetPort: 80
++    targetPort: 1080
+     nodePort: 30002
+   selector:
+     app: mailserver
+diff --git a/src/k8s/notificationservice.yaml b/src/k8s/notificationservice.yaml
+index 8aefda4..4918d4d 100644
+--- a/src/k8s/notificationservice.yaml
++++ b/src/k8s/notificationservice.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: DOTNET_ENVIRONMENT
+           value: Production
+-        image: pitstop/notificationservice:1.0
++        image: avinashyadavpuresoftware/notificationservice:1.0
+         imagePullPolicy: IfNotPresent
+         name: notificationservice
+       restartPolicy: Always
+diff --git a/src/k8s/start-dashboards.sh b/src/k8s/start-dashboards.sh
+old mode 100644
+new mode 100755
+diff --git a/src/k8s/stop-dashboards.sh b/src/k8s/stop-dashboards.sh
+old mode 100644
+new mode 100755
+diff --git a/src/k8s/timeservice.yaml b/src/k8s/timeservice.yaml
+index 985c73b..f6133d0 100644
+--- a/src/k8s/timeservice.yaml
++++ b/src/k8s/timeservice.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: DOTNET_ENVIRONMENT
+           value: Production
+-        image: pitstop/timeservice:1.0
++        image: avinashyadavpuresoftware/timeservice:1.0
+         imagePullPolicy: IfNotPresent
+         name: timeservice
+       restartPolicy: Always
+diff --git a/src/k8s/vehiclemanagementapi-istio.yaml b/src/k8s/vehiclemanagementapi-istio.yaml
+index f326f20..cd574ab 100644
+--- a/src/k8s/vehiclemanagementapi-istio.yaml
++++ b/src/k8s/vehiclemanagementapi-istio.yaml
+@@ -24,7 +24,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/vehiclemanagementapi:1.0
++        image: pitstop/vehiclemanagementapi:latest
+         imagePullPolicy: IfNotPresent
+         name: vehiclemanagementapi
+         ports:
+diff --git a/src/k8s/vehiclemanagementapi.yaml b/src/k8s/vehiclemanagementapi.yaml
+index 6c7baca..e130ffa 100644
+--- a/src/k8s/vehiclemanagementapi.yaml
++++ b/src/k8s/vehiclemanagementapi.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/vehiclemanagementapi:1.0
++        image: avinashyadavpuresoftware/vehiclemanagementapi:1.0
+         imagePullPolicy: IfNotPresent
+         name: vehiclemanagementapi
+         ports:
+diff --git a/src/k8s/webapp-istio.yaml b/src/k8s/webapp-istio.yaml
+index f55bf84..e4910f6 100644
+--- a/src/k8s/webapp-istio.yaml
++++ b/src/k8s/webapp-istio.yaml
+@@ -24,7 +24,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/webapp:1.0
++        image: pitstop/webapp:latest
+         imagePullPolicy: IfNotPresent
+         name: webapp
+         ports:
+diff --git a/src/k8s/webapp.yaml b/src/k8s/webapp.yaml
+index e64fd62..67f1efd 100644
+--- a/src/k8s/webapp.yaml
++++ b/src/k8s/webapp.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/webapp:1.0
++        image: avinashyadavpuresoftware/webapp:1.0
+         imagePullPolicy: IfNotPresent
+         name: webapp
+         ports:
+diff --git a/src/k8s/workshopmanagementapi-istio.yaml b/src/k8s/workshopmanagementapi-istio.yaml
+index df5450c..54262f8 100644
+--- a/src/k8s/workshopmanagementapi-istio.yaml
++++ b/src/k8s/workshopmanagementapi-istio.yaml
+@@ -24,7 +24,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/workshopmanagementapi:1.0
++        image: pitstop/workshopmanagementapi:latest
+         imagePullPolicy: IfNotPresent
+         name: workshopmanagementapi
+         ports:
+diff --git a/src/k8s/workshopmanagementapi.yaml b/src/k8s/workshopmanagementapi.yaml
+index 2726103..3a050bf 100644
+--- a/src/k8s/workshopmanagementapi.yaml
++++ b/src/k8s/workshopmanagementapi.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: ASPNETCORE_ENVIRONMENT
+           value: Production
+-        image: pitstop/workshopmanagementapi:1.0
++        image: avinashyadavpuresoftware/workshopmanagementapi:1.0
+         imagePullPolicy: IfNotPresent
+         name: workshopmanagementapi
+         ports:
+diff --git a/src/k8s/workshopmanagementeventhandler.yaml b/src/k8s/workshopmanagementeventhandler.yaml
+index ff1c3df..c685bfb 100644
+--- a/src/k8s/workshopmanagementeventhandler.yaml
++++ b/src/k8s/workshopmanagementeventhandler.yaml
+@@ -22,7 +22,7 @@ spec:
+       - env:
+         - name: DOTNET_ENVIRONMENT
+           value: Production
+-        image: pitstop/workshopmanagementeventhandler:1.0
++        image: avinashyadavpuresoftware/workshopmanagementeventhandler:1.0
+         imagePullPolicy: IfNotPresent
+         name: workshopmanagementeventhandler
+       restartPolicy: Always
