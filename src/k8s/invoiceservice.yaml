@@ -22,7 +22,7 @@ spec:
       - env:
         - name: DOTNET_ENVIRONMENT
           value: Production
-        image: pitstop/invoiceservice:1.0
+        image: avinashyadavpuresoftware/invoiceservice:1.0
         imagePullPolicy: IfNotPresent
         name: invoiceservice
       restartPolicy: Always

@@ -24,7 +24,7 @@ spec:
       - env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        image: pitstop/workshopmanagementapi:1.0
+        image: pitstop/workshopmanagementapi:latest
         imagePullPolicy: IfNotPresent
         name: workshopmanagementapi
         ports:

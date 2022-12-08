@@ -24,7 +24,7 @@ spec:
       - env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        image: pitstop/vehiclemanagementapi:1.0
+        image: pitstop/vehiclemanagementapi:latest
         imagePullPolicy: IfNotPresent
         name: vehiclemanagementapi
         ports:

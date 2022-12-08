@@ -24,7 +24,7 @@ spec:
       - env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        image: pitstop/customermanagementapi:1.0
+        image: pitstop/customermanagementapi:latest
         imagePullPolicy: IfNotPresent
         name: customermanagementapi
         ports:

@@ -22,7 +22,7 @@ spec:
       - env:
         - name: DOTNET_ENVIRONMENT
           value: Production
-        image: pitstop/workshopmanagementeventhandler:1.0
+        image: avinashyadavpuresoftware/workshopmanagementeventhandler:1.0
         imagePullPolicy: IfNotPresent
         name: workshopmanagementeventhandler
       restartPolicy: Always
